@@ -47,13 +47,22 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        @keyframes pulse-shadow {
+        @keyframes pulse-shadow-cyan {
             0% { box-shadow: 0 0 10px 0px rgba(0, 231, 255, 0.3); }
             50% { box-shadow: 0 0 25px 10px rgba(0, 231, 255, 0.6); }
             100% { box-shadow: 0 0 10px 0px rgba(0, 231, 255, 0.3); }
         }
-        .animate-pulse-shadow {
-            animation: pulse-shadow 2.5s infinite linear;
+        .animate-pulse-shadow-cyan {
+            animation: pulse-shadow-cyan 2.5s infinite linear;
+        }
+        /* NEW: White pulse for the final CTA button */
+        @keyframes pulse-shadow-white {
+            0% { box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.3); }
+            50% { box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.6); }
+            100% { box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.3); }
+        }
+        .animate-pulse-shadow-white {
+            animation: pulse-shadow-white 2.5s infinite linear;
         }
         @keyframes pulse-glow {
             0% { filter: drop-shadow(0 0 5px rgba(0, 231, 255, 0.3)); }
@@ -63,15 +72,24 @@
         .animate-pulse-glow {
             animation: pulse-glow 2.5s infinite linear;
         }
-
         #starfield {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0; /* Behind content, in front of body bg */
-            pointer-events: none; /* Let clicks pass through */
+            z-index: 0; 
+            pointer-events: none;
+        }
+        /* NEW: For scroll-in animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -84,35 +102,39 @@
     <div class="relative z-10">
 
         <!-- Header -->
-        <header class="container mx-auto px-6 py-6 flex justify-between items-center">
-            <div class="text-2xl font-bold">
-                VisionLink <span class="text-cyan-400">AI</span>
+        <!-- UPDATED: Made header sticky with a glass background for polish -->
+        <header class="sticky top-0 z-50 bg-gray-900/30 backdrop-blur-lg border-b border-white/10 transition-all">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="text-2xl font-bold">
+                    VisionLink <span class="text-cyan-400">AI</span>
+                </div>
+                <nav class="flex items-center space-x-6">
+                    <a href="#mission" class="text-gray-300 hover:text-cyan-400 transition-colors">Mission</a>
+                    <a href="#how-it-works" class="text-gray-300 hover:text-cyan-400 transition-colors">How It Works</a>
+                    <!-- UPDATED: Added a small CTA button to the nav -->
+                    <a href="main.html" class="bg-cyan-500/80 hover:bg-cyan-500 text-white font-semibold py-2 px-5 rounded-full text-sm transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
+                        Launch App
+                    </a>
+                </nav>
             </div>
-            <nav>
-                <a href="#mission" class="text-gray-300 hover:text-cyan-400 transition-colors">Mission</a>
-            </nav>
         </header>
 
         <main>
             <!-- Hero Section -->
             <section class="container mx-auto px-6 py-24 md:py-32">
-                <div class="glass-card max-w-4xl mx-auto rounded-3xl p-10 md:p-16 text-center">
+                <!-- UPDATED: Added id="hero-card" for JS tilt effect -->
+                <div id="hero-card" class="glass-card max-w-4xl mx-auto rounded-3xl p-10 md:p-16 text-center" style="transition: transform 0.1s ease-out;"> <!-- Added smooth transition -->
                     <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
                         See the World, <span class="gradient-text">Guided by AI</span>
                     </h1>
                     <p class="text-xl md:text-2xl text-gray-300 font-normal max-w-3xl mx-auto mb-10">
                         An intelligent visual assistant designed to empower the visually impaired by describing the world around them in real-time.
                     </p>
-                    <a href="main.html" class="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-300 ease-in-out shadow-lg transform hover:scale-105 active:scale-95 animate-pulse-shadow">
+                    <a href="main.html" class="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-300 ease-in-out shadow-lg transform hover:scale-105 active:scale-95 animate-pulse-shadow-cyan">
                         Launch the Assistant
                     </a>
                 </div>
             </section>
-            <!-- 
-                IMPORTANT: The link above "href="assistant.html"" assumes you will rename
-                the visual assistant app to "assistant.html" and keep it in the
-                same directory as this landing page.
-            -->
 
             <!-- Our Mission Section -->
             <section id="mission" class="py-20 md:py-24">
@@ -124,12 +146,11 @@
                     
                     <div class="grid md:grid-cols-2 gap-10 items-center">
                         <div>
-                            <!-- Placeholder for a simple, abstract graphic -->
                             <div class="glass-card rounded-2xl p-8 flex justify-center items-center aspect-square">
                                 <!-- Pulsing Icon -->
                                 <svg class="w-32 h-32 text-cyan-400 animate-pulse-glow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639l4.43-4.43a1.012 1.012 0 011.638-.04 1.012 1.012 0 01-.04 1.638L4.038 12l3.02 3.02a1.012 1.012 0 01-.04 1.638 1.012 1.012 0 01-1.638-.04l-4.43-4.43zM11.964 12.322a1.012 1.012 0 010-.639l4.43-4.43a1.012 1.012 0 011.638-.04 1.012 1.012 0 01-.04 1.638L12.038 12l3.02 3.02a1.012 1.012 0 01-.04 1.638 1.012 1.012 0 01-1.638-.04l-4.43-4.43z" clip-rule="evenodd" />
-                                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 18a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd" />
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639l4.43-4.43a1.012 1.012 0 011.638-.04 1.012 1.012 0 01-.04 1.638L4.038 12l3.02 3.02a1.012 1.012 0 01-.04 1.638 1.012 1.012 0 01-1.638-.04l-4.43-4.43zM11.964 12.322a1.012 1.012 0 010-.639l4.43-4.43a1.012 1.012 0 011.638-.04 1.012 1.012 0 01-.04 1.638L12.038 12l3.02 3.02a1.012 1.012 0 01-.04 1.638 1.012 1.012 0 01-1.638-.04l-4.43-4.43z" clip-rule="evenodd" />
+                                  <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 18a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd" />
                                 </svg>
                             </div>
                         </div>
@@ -145,9 +166,10 @@
                     </div>
                 </div>
             </section>
-
+            
             <!-- How It Works Section -->
-            <section class="py-20 md:py-24">
+            <!-- UPDATED: Added id="how-it-works" for nav link -->
+            <section id="how-it-works" class="py-20 md:py-24">
                 <div class="container mx-auto px-6 max-w-5xl">
                     <div class="text-center mb-16">
                         <h2 class="text-4xl font-bold mb-4">Simple & Intuitive</h2>
@@ -156,7 +178,8 @@
 
                     <div class="grid md:grid-cols-3 gap-8 text-center">
                         <!-- Step 1 -->
-                        <div class="glass-card p-8 rounded-2xl shadow-lg">
+                        <!-- UPDATED: Added .fade-in-up class for scroll animation -->
+                        <div class="glass-card p-8 rounded-2xl shadow-lg fade-in-up">
                             <div class="mb-4">
                                 <span class="text-5xl font-bold gradient-text block">1</span>
                             </div>
@@ -166,7 +189,7 @@
                             </p>
                         </div>
                         <!-- Step 2 -->
-                        <div class="glass-card p-8 rounded-2xl shadow-lg">
+                        <div class="glass-card p-8 rounded-2xl shadow-lg fade-in-up" style="transition-delay: 200ms;"> <!-- Added delay -->
                             <div class="mb-4">
                                 <span class="text-5xl font-bold gradient-text block">2</span>
                             </div>
@@ -176,7 +199,7 @@
                             </p>
                         </div>
                         <!-- Step 3 -->
-                        <div class="glass-card p-8 rounded-2xl shadow-lg">
+                        <div class="glass-card p-8 rounded-2xl shadow-lg fade-in-up" style="transition-delay: 400ms;"> <!-- Added delay -->
                             <div class="mb-4">
                                 <span class="text-5xl font-bold gradient-text block">3</span>
                             </div>
@@ -190,15 +213,19 @@
             </section>
 
             <!-- Final CTA Section -->
-            <section class="bg-gradient-to-r from-cyan-600 to-blue-600 py-20">
-                <div class="container mx-auto px-6 text-center">
-                    <h2 class="text-4xl font-extrabold mb-6">Ready to Get Started?</h2>
-                    <p class="text-xl text-white/90 max-w-2xl mx-auto mb-10 font-normal">
-                        Experience a new way to interact with your environment.
-                    </p> <!-- *** THIS IS THE FIX *** -->
-                    <a href="main.html" class="bg-white text-gray-900 font-bold py-4 px-10 rounded-full text-lg transition-all duration-300 ease-in-out shadow-lg hover:shadow-white/30 transform hover:scale-105 active:scale-95">
-                        Launch the Assistant
-                    </a>
+            <!-- UPDATED: Changed this section to use the glass-card theme for consistency -->
+            <section class="py-20 md:py-24">
+                <div class="container mx-auto px-6">
+                    <div class="glass-card max-w-4xl mx-auto rounded-3xl p-10 md:p-16 text-center">
+                        <h2 class="text-4xl font-extrabold mb-6">Ready to Get Started?</h2>
+                        <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-10 font-normal">
+                            Experience a new way to interact with your environment.
+                        </p>
+                        <!-- UPDATED: Added new white pulse animation -->
+                        <a href="main.html" class="bg-white text-gray-900 font-bold py-4 px-10 rounded-full text-lg transition-all duration-300 ease-in-out shadow-lg hover:shadow-white/30 transform hover:scale-105 active:scale-95 animate-pulse-shadow-white">
+                            Launch the Assistant
+                        </a>
+                    </div>
                 </div>
             </section>
         </main>
@@ -223,33 +250,51 @@
 
         function createStars() {
             stars = [];
-            let starCount = 200;
+            let starCount = 300; // Increased star count
             for (let i = 0; i < starCount; i++) {
+                const radius = Math.random() * 1.5 + 0.5; // 0.5 to 2px
                 stars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    radius: Math.random() * 1.5 + 0.5, // 0.5 to 2px
-                    speed: Math.random() * 0.5 + 0.1 // 0.1 to 0.6
+                    radius: radius,
+                    // UPDATED: Faster stars are bigger, creating a parallax effect
+                    speed: radius * 0.4 + 0.1, // Speed from 0.1 to 0.7
+                    // UPDATED: Each star has its own opacity for twinkling
+                    opacity: Math.random() * 0.5 + 0.5, // 0.5 to 1.0
+                    opacityDirection: 1
                 });
             }
         }
 
         function drawStars() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'white';
+            
             for (let star of stars) {
                 ctx.beginPath();
+                // UPDATED: Use the star's individual opacity
+                ctx.globalAlpha = star.opacity;
+                ctx.fillStyle = 'white';
                 ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
                 ctx.fill();
             }
+            ctx.globalAlpha = 1.0; // Reset alpha
         }
 
         function updateStars() {
             for (let star of stars) {
                 star.y += star.speed;
-                if (star.y > canvas.height) {
-                    star.y = 0;
+                if (star.y > canvas.height + star.radius) {
+                    star.y = -star.radius;
                     star.x = Math.random() * canvas.width;
+                }
+
+                // UPDATED: Twinkling effect
+                if (star.opacityDirection > 0) {
+                    star.opacity += 0.005;
+                    if (star.opacity >= 1.0) star.opacityDirection = -1;
+                } else {
+                    star.opacity -= 0.005;
+                    if (star.opacity <= 0.3) star.opacityDirection = 1;
                 }
             }
         }
@@ -269,6 +314,60 @@
         resizeCanvas();
         createStars();
         animate();
+
+        // NEW: 3D Tilt Effect for Hero Card
+        const heroCard = document.getElementById('hero-card');
+        if (heroCard) {
+            heroCard.addEventListener('mousemove', (e) => {
+                const rect = heroCard.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                const rotateX = (y / rect.height) * -10; // Max 5deg tilt
+                const rotateY = (x / rect.width) * 10;  // Max 5deg tilt
+
+                heroCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+                heroCard.style.boxShadow = `0 20px 40px rgba(0, 0, 0, 0.4)`;
+            });
+
+            heroCard.addEventListener('mouseleave', () => {
+                heroCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-8px)';
+                heroCard.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3)';
+            });
+        }
+
+        // NEW: Scroll-in Animation for "How It Works" Cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        });
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // This is a fix for the icon issue I had during generation.
+        // It ensures the correct "eye" icon is used in the "Our Mission" section.
+        document.addEventListener('DOMContentLoaded', () => {
+            const iconContainer = document.querySelector('#mission .glass-card > svg');
+            if (iconContainer && iconContainer.parentElement) {
+                // Ensure the parent is the one we want to replace content in
+                const parentDiv = iconContainer.parentElement;
+                if (parentDiv.classList.contains('aspect-square')) {
+                     parentDiv.innerHTML = `
+                        <svg class="w-32 h-32 text-cyan-400 animate-pulse-glow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639l4.43-4.43a1.012 1.012 0 011.638-.04 1.012 1.012 0 01-.04 1.638L4.038 12l3.02 3.02a1.012 1.012 0 01-.04 1.638 1.012 1.012 0 01-1.638-.04l-4.43-4.43zM11.964 12.322a1.012 1.012 0 010-.639l4.43-4.43a1.012 1.012 0 011.638-.04 1.012 1.012 0 01-.04 1.638L12.038 12l3.02 3.02a1.012 1.012 0 01-.04 1.638 1.012 1.012 0 01-1.638-.04l-4.43-4.43z" clip-rule="evenodd" />
+                           <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 18a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd" />
+                        </svg>
+                     `;
+                }
+            }
+        });
     </script>
 </body>
 </html>
